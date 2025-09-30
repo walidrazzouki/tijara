@@ -1,76 +1,221 @@
-<!DOCTYPE html>
-<html lang="fr">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FormatStore</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Product Grid — LocalStorage</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #000;
-      color: #fff;
-      text-align: center;
+    :root{
+      --bg:#0f0f10;
+      --card:#fff;
+      --muted:#6b6b6b;
+      --accent:#111;
     }
-    header {
-      padding: 60px 20px;
-      background: linear-gradient(to right, #000, #222);
+    *{box-sizing:border-box;font-family:system-ui,Segoe UI,Roboto,Arial}
+    body{margin:0;background:linear-gradient(180deg,var(--bg),#141414);color:var(--card);min-height:100vh;padding:28px}
+    .wrap{max-width:1100px;margin:0 auto}
+
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:20px}
+    header h1{font-size:20px;margin:0;font-weight:700;color:#fff}
+
+    .form{
+      background:#fff;color:#111;padding:14px;border-radius:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:end;box-shadow:0 6px 18px rgba(0,0,0,.35)
     }
-    header h1 {
-      font-size: 48px;
-      margin: 0;
-      letter-spacing: 2px;
-    }
-    header p {
-      font-size: 18px;
-      margin-top: 10px;
-      color: #ccc;
-    }
-    section {
-      padding: 60px 20px;
-    }
-    .btn {
-      display: inline-block;
-      margin: 15px;
-      padding: 12px 24px;
-      border: 2px solid #fff;
-      border-radius: 30px;
-      color: #fff;
-      text-decoration: none;
-      transition: 0.3s;
-    }
-    .btn:hover {
-      background: #fff;
-      color: #000;
-    }
-    footer {
-      background: #111;
-      padding: 20px;
-      font-size: 14px;
-      color: #aaa;
-    }
+    .form .field{display:flex;flex-direction:column;gap:6px;min-width:140px;flex:1}
+    .form label{font-size:12px;color:var(--muted)}
+    .form input,.form textarea{padding:8px;border-radius:6px;border:1px solid #ddd;font-size:14px}
+    .form textarea{resize:vertical;min-height:52px}
+    .form .actions{display:flex;gap:8px}
+    .btn{background:#111;color:#fff;padding:10px 14px;border-radius:8px;border:0;cursor:pointer}
+    .btn.ghost{background:transparent;color:#111;border:1px solid #ddd}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-top:22px}
+    .card{background:#fff;color:#111;border-radius:12px;padding:12px;box-shadow:0 6px 20px rgba(0,0,0,.2);display:flex;flex-direction:column;gap:8px}
+    .card h3{margin:0;font-size:16px}
+    .meta{font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
+    .desc{font-size:13px;color:#222;margin-top:6px}
+    .card .card-actions{margin-top:auto;display:flex;gap:8px}
+    .chip{background:#f3f3f3;padding:6px 8px;border-radius:8px;font-size:12px}
+
+    @media (max-width:600px){body{padding:14px}.form{flex-direction:column;align-items:stretch}}
   </style>
 </head>
 <body>
-  <header>
-    <h1>FormatStore</h1>
-    <p>Élégance & Simplicité – Votre boutique en ligne</p>
-  </header>
+  <div class="wrap">
+    <header>
+      <h1>Product Grid (localStorage)</h1>
+      <div style="color:var(--muted);font-size:13px">Products saved locally in your browser</div>
+    </header>
 
-  <section>
-    <h2>Bienvenue</h2>
-    <p>Découvrez notre sélection unique et élégante.</p>
-    <a href="#" class="btn">S'inscrire</a>
-    <a href="#" class="btn">Se connecter</a>
-  </section>
+    <form id="productForm" class="form" onsubmit="return false;">
+      <div class="field">
+        <label for="title">Product name</label>
+        <input id="title" required placeholder="e.g. Classic Watch" />
+      </div>
+      <div class="field">
+        <label for="price">Price (USD)</label>
+        <input id="price" type="number" step="0.01" min="0" required placeholder="0.00" />
+      </div>
+      <div class="field" style="flex:2">
+        <label for="description">Description</label>
+        <textarea id="description" placeholder="Short description..."></textarea>
+      </div>
+      <div class="field" style="max-width:120px">
+        <label for="quantity">Quantity</label>
+        <input id="quantity" type="number" min="0" value="1" required />
+      </div>
 
-  <section>
-    <h2>À propos</h2>
-    <p>FormatStore est une plateforme qui offre une expérience simple et moderne, inspirée du noir et blanc.</p>
-  </section>
+      <div class="actions">
+        <button id="saveBtn" class="btn">Add product</button>
+        <button id="clearBtn" class="btn ghost" type="button">Clear all</button>
+      </div>
 
-  <footer>
-    © 2025 FormatStore. Tous droits réservés.
-  </footer>
+      <input id="editingId" type="hidden" />
+    </form>
+
+    <div id="grid" class="grid" aria-live="polite"></div>
+
+  </div>
+
+  <script>
+    const LS_KEY = 'products_v1';
+    const form = document.getElementById('productForm');
+    const titleInput = document.getElementById('title');
+    const priceInput = document.getElementById('price');
+    const descInput = document.getElementById('description');
+    const qtyInput = document.getElementById('quantity');
+    const grid = document.getElementById('grid');
+    const saveBtn = document.getElementById('saveBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const editingId = document.getElementById('editingId');
+
+    function readProducts(){
+      try{
+        return JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+      }catch(e){
+        console.error(e); return [];
+      }
+    }
+    function writeProducts(list){
+      localStorage.setItem(LS_KEY, JSON.stringify(list));
+    }
+
+    function render(){
+      const items = readProducts();
+      grid.innerHTML = '';
+      if(items.length===0){
+        grid.innerHTML = '<div style="grid-column:1/-1;color:#ddd;padding:20px;border-radius:8px;background:transparent;text-align:center">No products yet — add one using the form above.</div>';
+        return;
+      }
+
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3>${escapeHtml(item.title)}</h3>
+            <div class="chip">x${item.quantity}</div>
+          </div>
+          <div class="meta"><div>Price</div><div>$${Number(item.price).toFixed(2)}</div></div>
+          <div class="desc">${escapeHtml(item.description || '')}</div>
+          <div class="card-actions">
+            <button class="btn" data-id="${item.id}" data-action="edit">Edit</button>
+            <button class="btn ghost" data-id="${item.id}" data-action="delete">Delete</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#039;');
+    }
+
+    // Add or update
+    saveBtn.addEventListener('click', () => {
+      const title = titleInput.value.trim();
+      const price = priceInput.value;
+      const description = descInput.value.trim();
+      const quantity = qtyInput.value;
+      if(!title || price === ''){ alert('Please provide name and price'); return; }
+
+      const items = readProducts();
+      const id = editingId.value;
+      if(id){
+        // update
+        const idx = items.findIndex(i=>i.id===id);
+        if(idx>-1){
+          items[idx] = { ...items[idx], title, price: Number(price), description, quantity: Number(quantity) };
+          writeProducts(items);
+          resetForm(); render();
+          saveBtn.textContent = 'Add product';
+          return;
+        }
+      }
+
+      // create
+      const newItem = {
+        id: cryptoRandomId(),
+        title,
+        price: Number(price),
+        description,
+        quantity: Number(quantity),
+        created: Date.now()
+      };
+      items.unshift(newItem);
+      writeProducts(items);
+      resetForm(); render();
+    });
+
+    clearBtn.addEventListener('click', ()=>{
+      if(!confirm('Clear all products?')) return;
+      localStorage.removeItem(LS_KEY); render();
+    });
+
+    grid.addEventListener('click', (e)=>{
+      const btn = e.target.closest('button');
+      if(!btn) return;
+      const action = btn.dataset.action;
+      const id = btn.dataset.id;
+      if(action==='edit') startEdit(id);
+      if(action==='delete') doDelete(id);
+    });
+
+    function startEdit(id){
+      const items = readProducts();
+      const item = items.find(i=>i.id===id);
+      if(!item) return alert('Item not found');
+      titleInput.value = item.title;
+      priceInput.value = item.price;
+      descInput.value = item.description || '';
+      qtyInput.value = item.quantity || 0;
+      editingId.value = item.id;
+      saveBtn.textContent = 'Update product';
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    function doDelete(id){
+      if(!confirm('Delete this product?')) return;
+      const items = readProducts().filter(i=>i.id!==id);
+      writeProducts(items); render();
+    }
+
+    function resetForm(){
+      form.reset(); editingId.value = ''; saveBtn.textContent = 'Add product';
+    }
+
+    function cryptoRandomId(){
+      // short safe id
+      return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
+    }
+
+    // initial render
+    render();
+  </script>
 </body>
 </html>
