@@ -1,221 +1,136 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Product Grid — LocalStorage</title>
-  <style>
-    :root{
-      --bg:#0f0f10;
-      --card:#fff;
-      --muted:#6b6b6b;
-      --accent:#111;
-    }
-    *{box-sizing:border-box;font-family:system-ui,Segoe UI,Roboto,Arial}
-    body{margin:0;background:linear-gradient(180deg,var(--bg),#141414);color:var(--card);min-height:100vh;padding:28px}
-    .wrap{max-width:1100px;margin:0 auto}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PACKAMAN - Maroc Products For Every One.</title>
+<style>
+body { margin:0; font-family:Arial,sans-serif; background:#f5f5f5; padding:20px; }
+h2 { text-align:center; margin-bottom:20px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:20px; }
+.grid-item { background:#fff;  overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.2); cursor:pointer; transition:transform 0.2s; }
+.grid-item:hover { transform:scale(1.05); }
+.grid-item img { width:100%; height:150px; object-fit:cover; display:block; }
 
-    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:20px}
-    header h1{font-size:20px;margin:0;font-weight:700;color:#fff}
+/* Popup */
+.popup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:1000; }
+.popup.active { display:flex; }
+.popup-content { position:relative; max-width:90%; max-height:90%; overflow:auto; background:#fff; padding:20px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+.popup-content img { width:150px; height:150px; object-fit:cover; border-radius:5px; cursor:zoom-in; }
 
-    .form{
-      background:#fff;color:#111;padding:14px;border-radius:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:end;box-shadow:0 6px 18px rgba(0,0,0,.35)
-    }
-    .form .field{display:flex;flex-direction:column;gap:6px;min-width:140px;flex:1}
-    .form label{font-size:12px;color:var(--muted)}
-    .form input,.form textarea{padding:8px;border-radius:6px;border:1px solid #ddd;font-size:14px}
-    .form textarea{resize:vertical;min-height:52px}
-    .form .actions{display:flex;gap:8px}
-    .btn{background:#111;color:#fff;padding:10px 14px;border-radius:8px;border:0;cursor:pointer}
-    .btn.ghost{background:transparent;color:#111;border:1px solid #ddd}
+/* Close button */
+.close-btn { position:absolute; top:10px; right:10px; background:red; color:#fff; border:none; padding:5px 10px; cursor:pointer; border-radius:5px; }
 
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-top:22px}
-    .card{background:#fff;color:#111;border-radius:12px;padding:12px;box-shadow:0 6px 20px rgba(0,0,0,.2);display:flex;flex-direction:column;gap:8px}
-    .card h3{margin:0;font-size:16px}
-    .meta{font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
-    .desc{font-size:13px;color:#222;margin-top:6px}
-    .card .card-actions{margin-top:auto;display:flex;gap:8px}
-    .chip{background:#f3f3f3;padding:6px 8px;border-radius:8px;font-size:12px}
-
-    @media (max-width:600px){body{padding:14px}.form{flex-direction:column;align-items:stretch}}
-  </style>
+/* Magnifier lens */
+.magnifier { position:absolute;  border-radius:50%; cursor:none; pointer-events:none; width:300px; height:300px; overflow:hidden; display:none; z-index:2000; }
+.magnifier img { position:absolute; width:auto; height:auto; max-width:none; }
+</style>
 </head>
 <body>
-  <div class="wrap">
     <header>
-      <h1>Product Grid (localStorage)</h1>
-      <div style="color:var(--muted);font-size:13px">Products saved locally in your browser</div>
+            
     </header>
+    <div class="grid" id="product-grid"></div>
 
-    <form id="productForm" class="form" onsubmit="return false;">
-      <div class="field">
-        <label for="title">Product name</label>
-        <input id="title" required placeholder="e.g. Classic Watch" />
-      </div>
-      <div class="field">
-        <label for="price">Price (USD)</label>
-        <input id="price" type="number" step="0.01" min="0" required placeholder="0.00" />
-      </div>
-      <div class="field" style="flex:2">
-        <label for="description">Description</label>
-        <textarea id="description" placeholder="Short description..."></textarea>
-      </div>
-      <div class="field" style="max-width:120px">
-        <label for="quantity">Quantity</label>
-        <input id="quantity" type="number" min="0" value="1" required />
-      </div>
-
-      <div class="actions">
-        <button id="saveBtn" class="btn">Add product</button>
-        <button id="clearBtn" class="btn ghost" type="button">Clear all</button>
-      </div>
-
-      <input id="editingId" type="hidden" />
-    </form>
-
-    <div id="grid" class="grid" aria-live="polite"></div>
-
+<!-- Popup -->
+<div class="popup" id="popup">
+  <div class="popup-content" id="popup-content">
+    <button class="close-btn" id="close-btn">X</button>
   </div>
+</div>
 
-  <script>
-    const LS_KEY = 'products_v1';
-    const form = document.getElementById('productForm');
-    const titleInput = document.getElementById('title');
-    const priceInput = document.getElementById('price');
-    const descInput = document.getElementById('description');
-    const qtyInput = document.getElementById('quantity');
-    const grid = document.getElementById('grid');
-    const saveBtn = document.getElementById('saveBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const editingId = document.getElementById('editingId');
+<!-- Magnifier -->
+<div class="magnifier" id="magnifier">
+  <img src="" alt="">
+</div>
 
-    function readProducts(){
-      try{
-        return JSON.parse(localStorage.getItem(LS_KEY) || '[]');
-      }catch(e){
-        console.error(e); return [];
-      }
-    }
-    function writeProducts(list){
-      localStorage.setItem(LS_KEY, JSON.stringify(list));
-    }
+<script>
+// JSON data
+const products = {
+  "1": ["1.png", "2.png", "3.png"],
+  "2": ["1.png", "2.png"],
+  "3": ["1.png", "2.png", "3.png", "4.png"]
+};
 
-    function render(){
-      const items = readProducts();
-      grid.innerHTML = '';
-      if(items.length===0){
-        grid.innerHTML = '<div style="grid-column:1/-1;color:#ddd;padding:20px;border-radius:8px;background:transparent;text-align:center">No products yet — add one using the form above.</div>';
-        return;
-      }
+const grid = document.getElementById("product-grid");
+const popup = document.getElementById("popup");
+const popupContent = document.getElementById("popup-content");
+const closeBtn = document.getElementById("close-btn");
+const magnifier = document.getElementById("magnifier");
+const magnifierImg = magnifier.querySelector("img");
 
-      items.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <h3>${escapeHtml(item.title)}</h3>
-            <div class="chip">x${item.quantity}</div>
-          </div>
-          <div class="meta"><div>Price</div><div>$${Number(item.price).toFixed(2)}</div></div>
-          <div class="desc">${escapeHtml(item.description || '')}</div>
-          <div class="card-actions">
-            <button class="btn" data-id="${item.id}" data-action="edit">Edit</button>
-            <button class="btn ghost" data-id="${item.id}" data-action="delete">Delete</button>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-    }
+// Build grid
+for (const folder in products) {
+    const firstImage = products[folder][0];
 
-    function escapeHtml(s){
-      return String(s)
-        .replace(/&/g,'&amp;')
-        .replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;')
-        .replace(/'/g,'&#039;');
-    }
+    const item = document.createElement("div");
+    item.className = "grid-item";
 
-    // Add or update
-    saveBtn.addEventListener('click', () => {
-      const title = titleInput.value.trim();
-      const price = priceInput.value;
-      const description = descInput.value.trim();
-      const quantity = qtyInput.value;
-      if(!title || price === ''){ alert('Please provide name and price'); return; }
+    const img = document.createElement("img");
+    img.src = `products/${folder}/${firstImage}`;
+    img.alt = `Product ${folder}`;
 
-      const items = readProducts();
-      const id = editingId.value;
-      if(id){
-        // update
-        const idx = items.findIndex(i=>i.id===id);
-        if(idx>-1){
-          items[idx] = { ...items[idx], title, price: Number(price), description, quantity: Number(quantity) };
-          writeProducts(items);
-          resetForm(); render();
-          saveBtn.textContent = 'Add product';
-          return;
-        }
-      }
+    item.appendChild(img);
+    grid.appendChild(item);
 
-      // create
-      const newItem = {
-        id: cryptoRandomId(),
-        title,
-        price: Number(price),
-        description,
-        quantity: Number(quantity),
-        created: Date.now()
-      };
-      items.unshift(newItem);
-      writeProducts(items);
-      resetForm(); render();
+    // Click to open popup
+    item.addEventListener('click', () => {
+        popupContent.querySelectorAll('img:not(.close-btn)').forEach(i => i.remove());
+        products[folder].forEach(imgName => {
+            const pImg = document.createElement("img");
+            pImg.src = `products/${folder}/${imgName}`;
+            popupContent.appendChild(pImg);
+
+            // Magnifier effect
+            pImg.addEventListener('mousemove', e => {
+                magnifier.style.display = 'block';
+                magnifierImg.src = pImg.src;
+
+                const rect = pImg.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                magnifier.style.left = e.pageX - magnifier.offsetWidth/2 + 'px';
+                magnifier.style.top = e.pageY - magnifier.offsetHeight/2 + 'px';
+
+                const scale = 5; // zoom scale
+                magnifierImg.style.width = pImg.width * scale + 'px';
+                magnifierImg.style.height = pImg.height * scale + 'px';
+                magnifierImg.style.left = -x * scale + magnifier.offsetWidth/2 + 'px';
+                magnifierImg.style.top = -y * scale + magnifier.offsetHeight/2 + 'px';
+            });
+            pImg.addEventListener('mouseleave', () => magnifier.style.display = 'none');
+
+            // Touch for mobile
+            pImg.addEventListener('touchmove', e => {
+                e.preventDefault();
+                magnifier.style.display = 'block';
+                magnifierImg.src = pImg.src;
+
+                const touch = e.touches[0];
+                const rect = pImg.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+
+                magnifier.style.left = touch.pageX - magnifier.offsetWidth/2 + 'px';
+                magnifier.style.top = touch.pageY - magnifier.offsetHeight/2 + 'px';
+
+                const scale = 5;
+                magnifierImg.style.width = pImg.width * scale + 'px';
+                magnifierImg.style.height = pImg.height * scale + 'px';
+                magnifierImg.style.left = -x * scale + magnifier.offsetWidth/2 + 'px';
+                magnifierImg.style.top = -y * scale + magnifier.offsetHeight/2 + 'px';
+            });
+            pImg.addEventListener('touchend', () => magnifier.style.display = 'none');
+        });
+        popup.classList.add('active');
     });
+}
 
-    clearBtn.addEventListener('click', ()=>{
-      if(!confirm('Clear all products?')) return;
-      localStorage.removeItem(LS_KEY); render();
-    });
+// Close popup
+closeBtn.addEventListener('click', () => popup.classList.remove('active'));
+popup.addEventListener('click', e => { if(e.target === popup) popup.classList.remove('active'); });
+</script>
 
-    grid.addEventListener('click', (e)=>{
-      const btn = e.target.closest('button');
-      if(!btn) return;
-      const action = btn.dataset.action;
-      const id = btn.dataset.id;
-      if(action==='edit') startEdit(id);
-      if(action==='delete') doDelete(id);
-    });
-
-    function startEdit(id){
-      const items = readProducts();
-      const item = items.find(i=>i.id===id);
-      if(!item) return alert('Item not found');
-      titleInput.value = item.title;
-      priceInput.value = item.price;
-      descInput.value = item.description || '';
-      qtyInput.value = item.quantity || 0;
-      editingId.value = item.id;
-      saveBtn.textContent = 'Update product';
-      window.scrollTo({top:0,behavior:'smooth'});
-    }
-
-    function doDelete(id){
-      if(!confirm('Delete this product?')) return;
-      const items = readProducts().filter(i=>i.id!==id);
-      writeProducts(items); render();
-    }
-
-    function resetForm(){
-      form.reset(); editingId.value = ''; saveBtn.textContent = 'Add product';
-    }
-
-    function cryptoRandomId(){
-      // short safe id
-      return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
-    }
-
-    // initial render
-    render();
-  </script>
 </body>
 </html>
