@@ -3,134 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PACKAMAN - Maroc Products For Every One.</title>
+<title>Logo Gallery</title>
 <style>
-body { margin:0; font-family:Arial,sans-serif; background:#f5f5f5; padding:20px; }
-h2 { text-align:center; margin-bottom:20px; }
-.grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:20px; }
-.grid-item { background:#fff;  overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.2); cursor:pointer; transition:transform 0.2s; }
-.grid-item:hover { transform:scale(1.05); }
-.grid-item img { width:100%; height:150px; object-fit:cover; display:block; }
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+  }
 
-/* Popup */
-.popup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:1000; }
-.popup.active { display:flex; }
-.popup-content { position:relative; max-width:90%; max-height:90%; overflow:auto; background:#fff; padding:20px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
-.popup-content img { width:150px; height:150px; object-fit:cover; border-radius:5px; cursor:zoom-in; }
+  h1 {
+    text-align: center;
+    padding: 20px 0;
+  }
 
-/* Close button */
-.close-btn { position:absolute; top:10px; right:10px; background:red; color:#fff; border:none; padding:5px 10px; cursor:pointer; border-radius:5px; }
+  .gallery {
+    column-count: 4; /* Number of columns */
+    column-gap: 16px;
+    padding: 16px;
+  }
 
-/* Magnifier lens */
-.magnifier { position:absolute;  border-radius:50%; cursor:none; pointer-events:none; width:300px; height:300px; overflow:hidden; display:none; z-index:2000; }
-.magnifier img { position:absolute; width:auto; height:auto; max-width:none; }
+  .gallery img {
+    width: 100%;
+    display: block;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    transition: transform 0.2s;
+  }
+
+  .gallery img:hover {
+    transform: scale(1.05);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 1200px) {
+    .gallery {
+      column-count: 3;
+    }
+  }
+  @media (max-width: 800px) {
+    .gallery {
+      column-count: 2;
+    }
+  }
+  @media (max-width: 500px) {
+    .gallery {
+      column-count: 1;
+    }
+  }
 </style>
 </head>
 <body>
-    <header>
-            
-    </header>
-    <div class="grid" id="product-grid"></div>
 
-<!-- Popup -->
-<div class="popup" id="popup">
-  <div class="popup-content" id="popup-content">
-    <button class="close-btn" id="close-btn">X</button>
-  </div>
+<h1>Logo Gallery</h1>
+<div class="gallery">
+  <img src="logo1.jpg" alt="Logo 1">
+  <img src="logo2.jpg" alt="Logo 2">
+  <img src="logo3.jpg" alt="Logo 3">
+  <img src="logo4.jpg" alt="Logo 4">
+  <img src="logo5.jpg" alt="Logo 5">
+  <img src="logo6.jpg" alt="Logo 6">
+  <img src="logo7.jpg" alt="Logo 7">
+  <img src="logo8.jpg" alt="Logo 8">
 </div>
-
-<!-- Magnifier -->
-<div class="magnifier" id="magnifier">
-  <img src="" alt="">
-</div>
-
-<script>
-// JSON data
-const products = {
-  "1": ["1.png", "2.png", "3.png"],
-  "2": ["1.png", "2.png"],
-  "3": ["1.png", "2.png", "3.png", "4.png"]
-};
-
-const grid = document.getElementById("product-grid");
-const popup = document.getElementById("popup");
-const popupContent = document.getElementById("popup-content");
-const closeBtn = document.getElementById("close-btn");
-const magnifier = document.getElementById("magnifier");
-const magnifierImg = magnifier.querySelector("img");
-
-// Build grid
-for (const folder in products) {
-    const firstImage = products[folder][0];
-
-    const item = document.createElement("div");
-    item.className = "grid-item";
-
-    const img = document.createElement("img");
-    img.src = `products/${folder}/${firstImage}`;
-    img.alt = `Product ${folder}`;
-
-    item.appendChild(img);
-    grid.appendChild(item);
-
-    // Click to open popup
-    item.addEventListener('click', () => {
-        popupContent.querySelectorAll('img:not(.close-btn)').forEach(i => i.remove());
-        products[folder].forEach(imgName => {
-            const pImg = document.createElement("img");
-            pImg.src = `products/${folder}/${imgName}`;
-            popupContent.appendChild(pImg);
-
-            // Magnifier effect
-            pImg.addEventListener('mousemove', e => {
-                magnifier.style.display = 'block';
-                magnifierImg.src = pImg.src;
-
-                const rect = pImg.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-
-                magnifier.style.left = e.pageX - magnifier.offsetWidth/2 + 'px';
-                magnifier.style.top = e.pageY - magnifier.offsetHeight/2 + 'px';
-
-                const scale = 5; // zoom scale
-                magnifierImg.style.width = pImg.width * scale + 'px';
-                magnifierImg.style.height = pImg.height * scale + 'px';
-                magnifierImg.style.left = -x * scale + magnifier.offsetWidth/2 + 'px';
-                magnifierImg.style.top = -y * scale + magnifier.offsetHeight/2 + 'px';
-            });
-            pImg.addEventListener('mouseleave', () => magnifier.style.display = 'none');
-
-            // Touch for mobile
-            pImg.addEventListener('touchmove', e => {
-                e.preventDefault();
-                magnifier.style.display = 'block';
-                magnifierImg.src = pImg.src;
-
-                const touch = e.touches[0];
-                const rect = pImg.getBoundingClientRect();
-                const x = touch.clientX - rect.left;
-                const y = touch.clientY - rect.top;
-
-                magnifier.style.left = touch.pageX - magnifier.offsetWidth/2 + 'px';
-                magnifier.style.top = touch.pageY - magnifier.offsetHeight/2 + 'px';
-
-                const scale = 5;
-                magnifierImg.style.width = pImg.width * scale + 'px';
-                magnifierImg.style.height = pImg.height * scale + 'px';
-                magnifierImg.style.left = -x * scale + magnifier.offsetWidth/2 + 'px';
-                magnifierImg.style.top = -y * scale + magnifier.offsetHeight/2 + 'px';
-            });
-            pImg.addEventListener('touchend', () => magnifier.style.display = 'none');
-        });
-        popup.classList.add('active');
-    });
-}
-
-// Close popup
-closeBtn.addEventListener('click', () => popup.classList.remove('active'));
-popup.addEventListener('click', e => { if(e.target === popup) popup.classList.remove('active'); });
-</script>
 
 </body>
 </html>
