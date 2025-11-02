@@ -62,6 +62,9 @@ function animateSeamless(carousel, speed = 1, vertical = false) {
 }
 
 
+
+
+
 window.onload = () => {
   animateSeamless(carousellogos, 3, false);  // Horizontal
   animateSeamless(carousellogos2, 3, false);  // Horizontal
@@ -85,3 +88,62 @@ window.onload = () => {
 
 
 
+
+
+
+// === ÉCRAN DE PRÉCHARGEMENT ===
+
+// Création de l'écran de chargement
+const preloadScreen = document.createElement("div");
+preloadScreen.style.position = "fixed";
+preloadScreen.style.top = 0;
+preloadScreen.style.left = 0;
+preloadScreen.style.width = "100%";
+preloadScreen.style.height = "100%";
+preloadScreen.style.background = "#000";
+preloadScreen.style.display = "flex";
+preloadScreen.style.alignItems = "center";
+preloadScreen.style.justifyContent = "center";
+preloadScreen.style.zIndex = "9999";
+preloadScreen.style.transition = "opacity 1s ease";
+preloadScreen.style.color = "#fff";
+preloadScreen.style.fontFamily = "sans-serif";
+preloadScreen.style.fontSize = "22px";
+preloadScreen.innerText = "Chargement...";
+
+// Animation simple (texte qui clignote)
+let dots = 0;
+const dotAnim = setInterval(() => {
+  dots = (dots + 1) % 4;
+  preloadScreen.innerText = "RAZZDESIGNER - Chargement" + ".".repeat(dots);
+}, 400);
+
+document.body.appendChild(preloadScreen);
+
+// === PRÉCHARGEMENT DES IMAGES ===
+function preloadImage(src) {
+  return new Promise((resolve, reject) => {
+    const temp = new Image();
+    temp.src = src;
+    temp.onload = resolve;
+    temp.onerror = reject;
+  });
+}
+
+async function preloadAll() {
+  const allImages = document.querySelectorAll("img");
+  const sources = Array.from(allImages).map(img => img.src);
+
+  // Attente du chargement complet de toutes les images
+  await Promise.all(sources.map(preloadImage));
+
+  // Petite attente supplémentaire pour l'effet fluide
+  setTimeout(() => {
+    clearInterval(dotAnim);
+    preloadScreen.style.opacity = "0";
+    setTimeout(() => preloadScreen.remove(), 1000); // disparition
+  }, 500);
+}
+
+// Lancer après le chargement du DOM
+window.addEventListener("load", preloadAll);
