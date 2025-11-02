@@ -1,6 +1,8 @@
 const carousellogos = document.querySelector('.carousellogos');
-const carouselbooks = document.querySelector('.carouselbooks');
-const carouselcovers = document.querySelector('.carouselcovers');
+const carousellogos2 = document.querySelector('.carousellogos2');
+const carousellogos3 = document.querySelector('.carousellogos3');
+const carousellogos4 = document.querySelector('.carousellogos4');
+const carousellogos5 = document.querySelector('.carousellogos5');
 
 const carousels = document.querySelectorAll('.carousels');
 
@@ -62,8 +64,10 @@ function animateSeamless(carousel, speed = 1, vertical = false) {
 
 window.onload = () => {
   animateSeamless(carousellogos, 3, false);  // Horizontal
-  animateSeamless(carouselbooks, 3, false);  // Horizontal
-  animateSeamless(carouselcovers, 3, false);    // Vertical
+  animateSeamless(carousellogos2, 3, false);  // Horizontal
+  animateSeamless(carousellogos3, 3, false);  // Horizontal
+  animateSeamless(carousellogos4, 3, false);  // Horizontal
+  animateSeamless(carousellogos5, 3, false);  // Horizontal
 };
 
 
