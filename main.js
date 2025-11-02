@@ -6,7 +6,7 @@ Object.assign(preloadScreen.style, {
   left: 0,
   width: "100%",
   height: "100%",
-  background: "#000",
+  background: "rgba(0, 0, 0, 0.5)", // ← نصف شفاف (50%),
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -14,8 +14,7 @@ Object.assign(preloadScreen.style, {
   transition: "opacity 1s ease",
   color: "#fff",
   fontFamily: "sans-serif",
-  fontSize: "22px",
-  opacity:"50%"
+  fontSize: "22px"
 });
 preloadScreen.innerText = "Chargement...";
 document.body.appendChild(preloadScreen);
@@ -97,4 +96,5 @@ function startCarousels() {
   animateSeamless(document.querySelector('.carousellogos4'), 3);
   animateSeamless(document.querySelector('.carousellogos5'), 3);
 }
+
 
