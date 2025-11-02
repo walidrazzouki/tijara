@@ -1,125 +1,109 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PACKAMAN : RAZZDESIGNER, des conceptes de design plus professionnelle !</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-        <header class="header">
-            <div class="toplogo"><a href="index.html">PACKAMAN</a>
-            <sup class="suplogo">RAZZDESIGNER</sup></div>
-            <!-- <nav>
-            <a href="#logos">LOGOS</a>
-            <a href="#covers">COVERS</a>
-            <a href="#books">BOOKS</a>
-            </nav> -->
-        </header> 
-        <!-- banner -->
-            <div class="bannerlogos">   
-            <div class="carousellogos carousels">
-            <img class="" src="files/1.png" alt="">
-            <img class="" src="files/2.png" alt="">
-            <img class="" src="files/3.png" alt="">
-            <img class="" src="files/4.png" alt="">
-            <img class="" src="files/5.png" alt="">
-            <img class="" src="files/6.png" alt="">
-            <img class="" src="files/7.png" alt="">
-            <img class="" src="files/8.png" alt="">
-            <img class="" src="files/9.png" alt="">
-            <img class="" src="files/10.png" alt="">
-            </div>
-            </div>
+// === ÉCRAN DE PRÉCHARGEMENT ===
+const preloadScreen = document.createElement("div");
+Object.assign(preloadScreen.style, {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  background: "#000",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: "9999",
+  transition: "opacity 1s ease",
+  color: "#fff",
+  fontFamily: "sans-serif",
+  fontSize: "22px",
+});
+preloadScreen.innerText = "Chargement...";
+document.body.appendChild(preloadScreen);
+
+let dots = 0;
+const dotAnim = setInterval(() => {
+  dots = (dots + 1) % 4;
+  preloadScreen.innerText = "RAZZDESIGNER - Chargement" + ".".repeat(dots);
+}, 400);
+
+// === PRÉCHARGEMENT DES IMAGES ===
+function preloadImage(src) {
+  return new Promise((resolve) => {
+    if (!src) return resolve(); // ignorer vide
+    const temp = new Image();
+    temp.onload = resolve;
+    temp.onerror = resolve;
+    temp.src = src;
+  });
+}
+
+async function preloadAll() {
+  const allImages = document.querySelectorAll("img");
+  const sources = [...new Set(Array.from(allImages).map(img => img.src))]; // éviter doublons
+
+  await Promise.all(sources.map(preloadImage));
+
+  clearInterval(dotAnim);
+  preloadScreen.style.opacity = "0";
+  setTimeout(() => preloadScreen.remove(), 1000);
+
+  // lancer animation APRÈS chargement
+  startCarousels();
+}
+
+// lancer après que tout le DOM soit prêt
+window.addEventListener("load", preloadAll);
 
 
-               <div class="bannerlogos">
-            <div class="carousellogos2 carousels">
-            <img class="" src="files/11.png" alt="">
-            <img class="" src="files/12.png" alt="">
-            <img class="" src="files/13.png" alt="">
-            <img class="" src="files/14.png" alt="">
-            <img class="" src="files/15.png" alt="">
-            <img class="" src="files/16.png" alt="">
-            <img class="" src="files/17.png" alt="">
-            <img class="" src="files/18.png" alt="">
-            <img class="" src="files/19.png" alt="">
-            <img class="" src="files/20.png" alt="">
-            </div>
-            </div>
+// === CAROUSEL APRÈS LE PRÉCHARGEMENT ===
+function startCarousels() {
+  const carousels = document.querySelectorAll('.carousels');
+
+  carousels.forEach(cp => {
+    cp.style.padding = "0 20px";
+  });
+
+  function animateSeamless(carousel, speed = 1, vertical = false) {
+    let paused = false;
+
+    // Dupliquer une seule fois maintenant
+    carousel.innerHTML += carousel.innerHTML;
+
+    function loop() {
+      if (!paused) {
+        if (vertical) {
+          carousel.scrollTop += speed;
+          if (carousel.scrollTop >= carousel.scrollHeight / 2) {
+            carousel.scrollTop = 0;
+          }
+        } else {
+          carousel.scrollLeft += speed;
+          if (carousel.scrollLeft >= carousel.scrollWidth / 2) {
+            carousel.scrollLeft = 0;
+          }
+        }
+      }
+      requestAnimationFrame(loop);
+    }
+
+    carousel.addEventListener('mouseenter', () => paused = true);
+    carousel.addEventListener('mouseleave', () => paused = false);
+    requestAnimationFrame(loop);
+  }
+
+  animateSeamless(document.querySelector('.carousellogos'), 3);
+  animateSeamless(document.querySelector('.carousellogos2'), 3);
+  animateSeamless(document.querySelector('.carousellogos3'), 3);
+  animateSeamless(document.querySelector('.carousellogos4'), 3);
+  animateSeamless(document.querySelector('.carousellogos5'), 3);
+}
 
 
-               <div class="bannerlogos">
-            <div class="carousellogos3 carousels">
-            <img class="" src="files/21.png" alt="">
-            <img class="" src="files/22.png" alt="">
-            <img class="" src="files/23.png" alt="">
-            <img class="" src="files/24.png" alt="">
-            <img class="" src="files/25.png" alt="">
-            <img class="" src="files/26.png" alt="">
-            <img class="" src="files/27.png" alt="">
-            <img class="" src="files/28.png" alt="">
-            <img class="" src="files/29.png" alt="">
-            <img class="" src="files/30.png" alt="">
-            </div>
-            </div>
+// open what app 
 
 
-            
-               <div class="bannerlogos">
-            <div class="carousellogos4 carousels">
-            <img class="" src="files/31.png" alt="">
-            <img class="" src="files/32.png" alt="">
-            <img class="" src="files/33.png" alt="">
-            <img class="" src="files/34.png" alt="">
-            <img class="" src="files/35.png" alt="">
-            <img class="" src="files/36.png" alt="">
-            <img class="" src="files/37.png" alt="">
-            <img class="" src="files/38.png" alt="">
-            <img class="" src="files/39.png" alt="">
-            <img class="" src="files/40.png" alt="">
-            </div>
-            </div>
-
-            
-               <div class="bannerlogos">
-            <div class="carousellogos5 carousels">
-            <img class="" src="files/41.png" alt="">
-            <img class="" src="files/42.png" alt="">
-            <img class="" src="files/43.png" alt="">
-            <img class="" src="files/44.png" alt="">
-            <img class="" src="files/45.png" alt="">
-            <img class="" src="files/46.png" alt="">
-            <img class="" src="files/47.png" alt="">
-            <img class="" src="files/48.png" alt="">
-            <img class="" src="files/49.png" alt="">
-            <img class="" src="files/50.png" alt="">
-            </div>
-            </div>
-
-
-            
-
-        </div>
-        <footer class="footer">
-            <div class="footer-container">
-                <div class="footer-left">
-                    <h2>PACKAMAN</h2>
-                    <p>Designs créatifs et professionnels par <strong>RazzDesigner</strong>.</p>
-                </div>
-                <div class="indices">
-                <img class="indice" src="files/fastdelivery.png" alt="">
-                <img class="indice" src="files/quality.png" alt="">
-                <img class="indice" src="files/support.png" alt="">
-                </div>
-                <div class="footer-right">
-                    <p>&copy; 2025 PACKAMAN. Tous droits réservés.</p>
-                </div>
-            </div>
-        </footer>
-    <script src="main.js"></script>
-
-</body>
-</html>
-
+function openWhatsApp() {
+  const phoneNumber = "+212681170546"; // Replace with the target number (include country code, no +)
+  const message = encodeURIComponent("Hello! I’d like to contact you. from www.packaman.online");
+  const url = `https://wa.me/${phoneNumber}?text=${message}`;
+  window.open(url, "_blank");
+}
