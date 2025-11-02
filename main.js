@@ -61,34 +61,11 @@ function animateSeamless(carousel, speed = 1, vertical = false) {
   requestAnimationFrame(loop);
 }
 
-
-
-
-
-window.onload = () => {
-  animateSeamless(carousellogos, 3, false);  // Horizontal
-  animateSeamless(carousellogos2, 3, false);  // Horizontal
-  animateSeamless(carousellogos3, 3, false);  // Horizontal
-  animateSeamless(carousellogos4, 3, false);  // Horizontal
-  animateSeamless(carousellogos5, 3, false);  // Horizontal
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+animateSeamless(carousellogos, 3, false);  // Horizontal
+animateSeamless(carousellogos2, 3, false);  // Horizontal
+animateSeamless(carousellogos3, 3, false);  // Horizontal
+animateSeamless(carousellogos4, 3, false);  // Horizontal
+animateSeamless(carousellogos5, 3, false);  // Horizontal
 
 
 // === ÉCRAN DE PRÉCHARGEMENT ===
@@ -145,5 +122,13 @@ async function preloadAll() {
   }, 500);
 }
 
+
 // Lancer après le chargement du DOM
 window.addEventListener("load", preloadAll);
+
+
+
+
+
+
+
