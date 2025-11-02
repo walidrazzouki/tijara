@@ -15,6 +15,7 @@ Object.assign(preloadScreen.style, {
   color: "#fff",
   fontFamily: "sans-serif",
   fontSize: "22px",
+  opacity:"50%"
 });
 preloadScreen.innerText = "Chargement...";
 document.body.appendChild(preloadScreen);
@@ -96,3 +97,4 @@ function startCarousels() {
   animateSeamless(document.querySelector('.carousellogos4'), 3);
   animateSeamless(document.querySelector('.carousellogos5'), 3);
 }
+
