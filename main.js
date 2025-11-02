@@ -6,7 +6,7 @@ Object.assign(preloadScreen.style, {
   left: 0,
   width: "100%",
   height: "100%",
-  background: "rgba(0, 0, 0, 0.9)", // ← نصف شفاف (50%),
+  background: "rgba(0, 0, 0, 0.2)", // ← نصف شفاف (50%),
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -96,6 +96,7 @@ function startCarousels() {
   animateSeamless(document.querySelector('.carousellogos4'), 3);
   animateSeamless(document.querySelector('.carousellogos5'), 3);
 }
+
 
 
 
