@@ -6,7 +6,7 @@ Object.assign(preloadScreen.style, {
   left: 0,
   width: "100%",
   height: "100%",
-  background: "rgba(0, 0, 0,0.3)", // ← نصف شفاف (50%),
+  background: "#000",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -14,7 +14,7 @@ Object.assign(preloadScreen.style, {
   transition: "opacity 1s ease",
   color: "#fff",
   fontFamily: "sans-serif",
-  fontSize: "22px"
+  fontSize: "22px",
 });
 preloadScreen.innerText = "Chargement...";
 document.body.appendChild(preloadScreen);
@@ -98,7 +98,12 @@ function startCarousels() {
 }
 
 
+// open what app 
 
 
-
-
+function openWhatsApp() {
+  const phoneNumber = "+212681170546"; // Replace with the target number (include country code, no +)
+  const message = encodeURIComponent("Hello! I’d like to contact you. from www.packaman.online");
+  const url = `https://wa.me/${phoneNumber}?text=${message}`;
+  window.open(url, "_blank");
+}
