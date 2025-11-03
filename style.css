@@ -1,9 +1,9 @@
-*{padding: 0;margin: 0;box-sizing: border-box;}
+*{padding: 0;margin: 0;box-sizing: border-box;font-size: 0.85rem !important;}
 html{overflow: auto;}
 header{padding: 5px;background: #0f0f10;display: flex;justify-content: space-between;align-items: center;}
-.toplogo{font-weight: bold;letter-spacing: 5px;padding: 0 0 0 20px;}
+.toplogo{letter-spacing: 5px;padding: 0 0 0 20px;}
 .toplogo a{text-decoration: none;color: rgb(241, 236, 236);}
-.suplogo{font-size: 0.5em;color: rgb(241, 236, 236);}
+.suplogo{font-size: 0.5em;font-weight: lighter; color: rgb(241, 236, 236);}
 nav{padding: 10px;width: 100%;text-align: end;}
 nav a{text-decoration: none;color: black;font-weight: light;}
 nav a:hover{text-decoration: underline;color: black;}
