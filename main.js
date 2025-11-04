@@ -95,6 +95,7 @@ function startCarousels() {
   animateSeamless(document.querySelector('.carousellogos3'), 3);
   animateSeamless(document.querySelector('.carousellogos4'), 3);
   animateSeamless(document.querySelector('.carousellogos5'), 3);
+  animateSeamless(document.querySelector('.carousellogos6'), 3);
 }
 
 
