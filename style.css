@@ -12,8 +12,10 @@ h1{text-align: center;font-family: arial;text-transform: uppercase;font-weight: 
 
 /* banner  */
 .logos,.books,.covers{background-color: rgba(255, 255, 255, 0.933);display: flex;align-items: center;justify-content: center;text-align: center;flex-direction: column;}
-.carousellogos,.carousellogos2,.carousellogos3,.carousellogos4,.carousellogos5{width: 100%;display: flex;align-items: center;justify-content: space-between;overflow: auto;scrollbar-width: none;}
+.carousellogos,.carousellogos2,.carousellogos3,.carousellogos4,.carousellogos5,.carousellogos6{width: 100%;display: flex;align-items: center;justify-content: space-between;overflow: auto;scrollbar-width: none;}
 .carousels img{width: 200px;height: 200px;}
+.carousellogos6 img{width: 200px;height: auto;}
+
 
 /* indices  */
 .indices{display: flex;align-items: center;justify-content: center;width: 100%;padding: 20px;}

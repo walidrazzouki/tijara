@@ -98,7 +98,6 @@ function startCarousels() {
   animateSeamless(document.querySelector('.carousellogos6'), 3);
 }
 
-
 // open what app 
 
 
