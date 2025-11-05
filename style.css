@@ -118,6 +118,6 @@ li{list-style-type: none;width: 100%;}
     }
 }
 
-.decor{perspective: 100px;width: 100%;margin: 20px 0;overflow: hidden;}
+.decor{perspective: 100px;width: 100%;margin: 100px 0;overflow: hidden;}
 .decoration{transform-style: preserve-3d;transform: rotateX(20deg);height: 50vh;background-color:#0f0f10;display: flex;align-items: center;justify-content: center;}
 .BlackBox{width: 200px;height: 200px;background-color: #2a2b2b;margin: 0 3px;}
