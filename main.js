@@ -97,6 +97,40 @@ function startCarousels() {
   animateSeamless(document.querySelector('.carousellogos5'), 3);
   animateSeamless(document.querySelector('.carousellogos6'), 3);
 }
+const close = document.createElement('div')
+  close.className = "close"
+  close.innerHTML = "X"
+
+  close.style.setProperty("top", "0");
+  close.style.setProperty("position", "absolute");
+  close.style.setProperty("padding", "10px");
+  close.style.setProperty("background", "red");
+  close.style.setProperty("color", "white");
+  close.style.setProperty("display", "none");
+  document.body.append(close)
+const carousels = document.querySelectorAll('.carousels')
+carousels.forEach(cr=>{
+cr.style.background = "#0f0f10"
+cr.addEventListener('click',()=>{
+  cr.style.setProperty("flex-wrap", "wrap");
+  cr.style.setProperty("position", "fixed");
+  cr.style.width ="100%";
+  cr.style.height ="100%";
+  cr.style.left="0";
+  cr.style.top="0";
+  cr.style.height ="100%";
+  close.style.removeProperty("display");
+  close.style.setProperty("left", "0");
+  close.addEventListener('click',()=>{
+  cr.style.removeProperty("flex-wrap");
+  cr.style.removeProperty("position");
+  setTimeout(() => {
+      close.style.setProperty("left", "-50px");
+  }, 1000);
+})
+})
+})
+
 
 // open what app 
 
