@@ -100,7 +100,6 @@ function startCarousels() {
 
 // open what app 
 
-
 function openWhatsApp() {
   const phoneNumber = "+212681170546"; // Replace with the target number (include country code, no +)
   const message = encodeURIComponent("Hello! I’d like to contact you. from www.packaman.online");

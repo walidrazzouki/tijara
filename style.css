@@ -1,5 +1,13 @@
 *{padding: 0;margin: 0;box-sizing: border-box;font-size: 0.85rem !important;}
 html{overflow: auto;}
+body {
+    background: #0d0d0d;
+    color: #fff;
+    font-family: 'Helvetica Neue', sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    font-weight: 300;
+}
 header{padding: 5px;background: #0f0f10;display: flex;justify-content: space-between;align-items: center;}
 .toplogo{letter-spacing: 5px;padding: 0 0 0 20px;}
 .toplogo a{text-decoration: none;color: rgb(241, 236, 236);}
@@ -12,9 +20,10 @@ h1{text-align: center;font-family: arial;text-transform: uppercase;font-weight: 
 
 /* banner  */
 .logos,.books,.covers{background-color: rgba(255, 255, 255, 0.933);display: flex;align-items: center;justify-content: center;text-align: center;flex-direction: column;}
-.carousellogos,.carousellogos2,.carousellogos3,.carousellogos4,.carousellogos5,.carousellogos6{width: 100%;display: flex;align-items: center;justify-content: space-between;overflow: auto;scrollbar-width: none;}
+.carousellogos,.carousellogos2,.carousellogos3,.carousellogos4,.carousellogos5,.carousellogos6,.carousellogos7{width: 100%;display: flex;align-items: center;justify-content: space-between;overflow: auto;scrollbar-width: none;}
 .carousels img{width: 200px;height: 200px;}
 .carousellogos6 img{width: 200px;height: auto;}
+/* 0711846263 0680846933*/
 
 
 /* indices  */
@@ -55,3 +64,60 @@ span{background-color: rgb(0, 0, 0);border-radius: 10px;margin: 10px;line-height
 span:hover{background-color: orangered;} 
 li{list-style-type: none;width: 100%;}
 
+
+.packs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background-color: red;
+    gap: 20px;
+}
+
+.packs div {
+    background: #0F0F10;
+    padding: 20px;
+    width: 280px;
+    text-align: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.packs div:hover {
+    transform: translateY(-4px);
+}
+
+.packs b {
+    display: block;
+    font-size: 18px;
+    font-weight: 300;
+    color: orangered;
+    margin-bottom: 10px;
+}
+
+.packs li {
+    list-style: none;
+    margin: 6px 0;
+    font-size: 14px;
+    color: #ffffff;
+    padding-left: 12px;
+    position: relative;
+}
+
+.packs li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: orangered;
+}
+
+@media(max-width:800px) {
+    .packs div {
+        width: 90%
+    }
+}
+
+.decor{perspective: 100px;width: 100%;margin: 20px 0;overflow: hidden;}
+.decoration{transform-style: preserve-3d;transform: rotateX(20deg);height: 50vh;background-color:#0f0f10;display: flex;align-items: center;justify-content: center;}
+.BlackBox{width: 200px;height: 200px;background-color: #2a2b2b;margin: 0 3px;}
