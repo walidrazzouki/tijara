@@ -23,6 +23,7 @@ h1{text-align: center;font-family: arial;text-transform: uppercase;font-weight: 
 .carousellogos,.carousellogos2,.carousellogos3,.carousellogos4,.carousellogos5,.carousellogos6,.carousellogos7{width: 100%;display: flex;align-items: center;justify-content: space-between;overflow: auto;scrollbar-width: none;}
 .carousels img{width: 200px;height: 200px;position: relative;}
 .carousellogos6 img{width: 200px;height: auto;}
+.carousellogos7 img{width: 300px;height: auto;margin: 0 2px;}
 
 
 .toggle{position: fixed;left: 0;right: 0;bottom: 0;top:0;margin: 0;margin: auto;width: 100%;height: 100%;z-index: 10000;}
