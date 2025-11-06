@@ -56,29 +56,26 @@ window.addEventListener("load", preloadAll);
 
 // === CAROUSEL APRÈS LE PRÉCHARGEMENT ===
 function startCarousels() {
-  const carousels = document.querySelectorAll('.carousels');
 
-  carousels.forEach(cp => {
-    cp.style.padding = "0 20px";
-  });
-
-  function animateSeamless(carousel, speed = 1, vertical = false) {
+  function animateAlternate(carousel, speed = 1, vertical = false) {
     let paused = false;
+    let direction = 1; // 1 = avant, -1 = arrière
 
-    // Dupliquer une seule fois maintenant
-    carousel.innerHTML += carousel.innerHTML;
+    const maxScroll = vertical
+      ? carousel.scrollHeight - carousel.clientHeight
+      : carousel.scrollWidth - carousel.clientWidth;
 
     function loop() {
       if (!paused) {
         if (vertical) {
-          carousel.scrollTop += speed;
-          if (carousel.scrollTop >= carousel.scrollHeight / 2) {
-            carousel.scrollTop = 0;
+          carousel.scrollTop += speed * direction;
+          if (carousel.scrollTop >= maxScroll || carousel.scrollTop <= 0) {
+            direction *= -1; // inverse le sens
           }
         } else {
-          carousel.scrollLeft += speed;
-          if (carousel.scrollLeft >= carousel.scrollWidth / 2) {
-            carousel.scrollLeft = 0;
+          carousel.scrollLeft += speed * direction;
+          if (carousel.scrollLeft >= maxScroll || carousel.scrollLeft <= 0) {
+            direction *= -1; // inverse le sens
           }
         }
       }
@@ -90,64 +87,14 @@ function startCarousels() {
     requestAnimationFrame(loop);
   }
 
-  animateSeamless(document.querySelector('.carousellogos'), 4);
-  animateSeamless(document.querySelector('.carousellogos2'), 4);
-  animateSeamless(document.querySelector('.carousellogos3'), 4);
-  animateSeamless(document.querySelector('.carousellogos4'), 4);
-  animateSeamless(document.querySelector('.carousellogos5'), 4);
-  animateSeamless(document.querySelector('.carousellogos6'), 4);
+  // lancer les carrousels avec alternance de direction
+  animateAlternate(document.querySelector('.carousellogos'), 4);
+  animateAlternate(document.querySelector('.carousellogos2'), 4);
+  animateAlternate(document.querySelector('.carousellogos3'), 4);
+  animateAlternate(document.querySelector('.carousellogos4'), 4);
+  animateAlternate(document.querySelector('.carousellogos5'), 4);
+  animateAlternate(document.querySelector('.carousellogos6'), 4);
 }
-const close = document.createElement('div')
-  close.className = "close"
-  close.innerHTML = "X"
-  close.style.setProperty("top", "0");
-  close.style.setProperty("position", "absolute");
-  close.style.setProperty("padding", "10px");
-  close.style.setProperty("background", "red");
-  close.style.setProperty("color", "white");
-  close.style.setProperty("display", "none");
-  close.style.setProperty("position", "fixed");
-  close.style.setProperty("font-weight", "bold");
-  document.body.append(close)
-const carousels = document.querySelectorAll('.carousels')
-carousels.forEach(cr=>{
-cr.style.background = "#0f0f10"
-cr.addEventListener('click',()=>{
-  cr.style.setProperty("flex-wrap", "wrap");
-  cr.style.setProperty("position", "fixed");
-  cr.style.setProperty("justify-content", "center");
-  cr.style.width ="100%";
-  cr.style.height ="100%";
-  cr.style.left="0";
-  cr.style.top="0";
-  cr.style.height ="100%";
-
-  const images = cr.querySelectorAll('img'); // all images on page
-  const total = images.length;
-  const half = total / 2;
-
-  for (let i = half; i < total; i++) {
-    images[i].style.visibility = 'hidden';
-  }
-
-
-  close.style.removeProperty("display");
-  close.style.setProperty("left", "0");
-  close.style.setProperty("cursor", "pointer");
-
-  close.addEventListener('click',()=>{
-  cr.style.removeProperty("flex-wrap");
-  cr.style.removeProperty("position");
-   for (let i = half; i < total; i++) {
-    images[i].style.visibility = 'visible';
-
-  }
-  setTimeout(() => {
-      close.style.setProperty("left", "-50px");
-  }, 1000);
-})
-})
-})
 
 // open what app 
 
