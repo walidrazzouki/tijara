@@ -36,42 +36,14 @@ function preloadImage(src) {
 }
 
 async function preloadAll() {
-  // === 1. Enable lazy loading for all images ===
-  document.querySelectorAll("img").forEach(img => {
-    if (!img.hasAttribute("loading")) img.setAttribute("loading", "lazy");
-  });
-
-  // === 2. Collect image sources (avoid duplicates) ===
   const allImages = document.querySelectorAll("img");
   const sources = [...new Set(Array.from(allImages).map(img => img.src))];
-
-  // === 3. Preload only visible (above-the-fold) images immediately ===
-  const visibleImages = Array.from(allImages).filter(img => {
-    const rect = img.getBoundingClientRect();
-    return rect.top < window.innerHeight && rect.bottom > 0;
-  });
-
-  await Promise.all(
-    visibleImages.map(img => new Promise(res => {
-      if (img.complete) return res();
-      img.onload = res;
-      img.onerror = res;
-    }))
-  );
-
-  // === 4. Decode all images silently (removes flicker) ===
-  for (const img of allImages) {
-    try { await img.decode(); } catch {}
-  }
-
-  // === 5. Hide preloader smoothly ===
+  await Promise.all(sources.map(preloadImage));
   clearInterval(dotAnim);
   preloadScreen.style.opacity = "0";
   setTimeout(() => preloadScreen.remove(), 1000);
-  // === 6. Launch carousels after images are ready ===
   startCarousels();
 }
-
 
 window.addEventListener("load", preloadAll);
 
