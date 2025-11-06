@@ -68,9 +68,6 @@ async function preloadAll() {
   clearInterval(dotAnim);
   preloadScreen.style.opacity = "0";
   setTimeout(() => preloadScreen.remove(), 1000);
-  document.querySelectorAll("img").forEach(img => {
-  if (!img.hasAttribute("loading")) img.setAttribute("loading", "lazy");
-  });
   // === 6. Launch carousels after images are ready ===
   startCarousels();
 }
