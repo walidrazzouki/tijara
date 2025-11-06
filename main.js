@@ -180,3 +180,35 @@ function openWhatsApp() {
   const url = `https://wa.me/${phoneNumber}?text=${message}`;
   window.open(url, "_blank");
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  // اختر كل الصور داخل أي div يحتوي class 'carousels'
+  const images = document.querySelectorAll(".carousels img");
+
+  images.forEach(img => {
+    // غلف الصورة في div جديد
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("img-wrapper");
+    wrapper.style.position = "relative";
+    wrapper.style.display = "inline-block";
+
+    // ضع الصورة داخل هذا الغلاف
+    img.parentNode.insertBefore(wrapper, img);
+    wrapper.appendChild(img);
+
+    // أنشئ عنصر النص
+    const copyright = document.createElement("span");
+    copyright.textContent = "© RAZZDESIGNER";
+    copyright.style.position = "absolute";
+    copyright.style.bottom = "5px";
+    copyright.style.right = "5px";
+    copyright.style.fontSize = "2em";
+    copyright.style.color = "white";
+    copyright.style.backgroundColor = "yellowgreen";
+    copyright.style.padding = "2px 4px";
+    copyright.style.borderRadius = "3px";
+    wrapper.appendChild(copyright);
+  });
+});
+
+
