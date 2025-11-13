@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoom & Drag Container (Images Not Draggable)</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #container-wrapper {
+            width: 100%;
+            height: 100%;
+            background: #f0f0f0;
+            cursor: grab;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #container {
+            width: 2000px;
+            height: 2000px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: 0 0;
+            background-image: url(greenglass.jpg);
+            background-repeat: repeat;
+            background-size: 50px;
+        }
+
+        /* Non-draggable, non-selectable images */
+        #container img {
+            user-select: none;
+            -webkit-user-drag: none;
+            pointer-events: none;
+            /* important: ignore mouse events for drag */
+            
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container-wrapper">
+        <div id="container">
+
+        </div>
+    </div>
+
+    <script>
+        const container = document.getElementById('container');
+        const wrapper = document.getElementById('container-wrapper');
+
+
+        let isDragging = false;
+        let startX, startY;
+        let offsetX = 0, offsetY = 0;
+        let scale = 1;
+
+        function clampOffsets() {
+            const maxOffsetX = 0;
+            const maxOffsetY = 0;
+            const minOffsetX = wrapper.clientWidth - container.clientWidth * scale;
+            const minOffsetY = wrapper.clientHeight - container.clientHeight * scale;
+
+            offsetX = Math.min(maxOffsetX, Math.max(minOffsetX, offsetX));
+            offsetY = Math.min(maxOffsetY, Math.max(minOffsetY, offsetY));
+        }
+
+        wrapper.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX - offsetX;
+            startY = e.clientY - offsetY;   
+            wrapper.style.cursor = 'grabbing';
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+            wrapper.style.cursor = 'grab';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            offsetX = e.clientX - startX;
+            offsetY = e.clientY - startY;
+            clampOffsets();
+            container.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+        });
+
+        // DISABLE zooming completely
+        wrapper.addEventListener('wheel', (e) => {
+            e.preventDefault(); // stops any zoom behavior
+            // You can still implement panning here if desired
+        }, { passive: false });
+
+
+
+      
+    </script>
+
+</body>
+
+</html>
